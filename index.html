@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Jump Game</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game">
+        <div id="character"></div>
+        <div id="block"></div>
+    </div>
+    <p>Score: <span id="scoreSpan"></span></p>
+    <div class="buttons">
+        <button id="startButton">Start</button>
+        <button id="jumpButton">Jump</button>
+    </div>
+
+    <script>
+        var character = document.getElementById("character");
+        var block = document.getElementById("block");
+        var counter = 0;
+        var checkDead;
+
+        function jump() {
+            if (character.classList.contains("animate")) {
+                return;
+            }
+            character.classList.add("animate");
+            setTimeout(function() {
+                character.classList.remove("animate");
+            }, 300);
+        }
+
+        var startButton = document.getElementById("startButton");
+        startButton.addEventListener("click", function() {
+            if (!startButton.disabled) {
+                checkDead = setInterval(function() {
+                    let characterTop = parseInt(window.getComputedStyle(character).getPropertyValue("top"));
+                    let blockLeft = parseInt(window.getComputedStyle(block).getPropertyValue("left"));
+                    if (blockLeft < 20 && blockLeft > -20 && characterTop >= 130) {
+                        block.style.animation = "none";
+                        clearInterval(checkDead);
+                        alert("GAME OVER. Score: " + Math.floor(counter / 100));
+                        counter = 0;
+                        block.style.animation = "block 1s infinite linear";
+                        startButton.disabled = false; // Enable the button after the game ends
+                    } else {
+                        counter++;
+                        document.getElementById("scoreSpan").innerHTML = Math.floor(counter / 100);
+                    }
+                }, 10);
+                startButton.disabled = true; // Disable the button once the game starts
+            }
+        });
+
+        var jumpButton = document.getElementById("jumpButton");
+        jumpButton.addEventListener("click", function() {
+            if (!character.classList.contains("animate")) {
+                jump();
+            }
+        });
+    </script>
+</body>
+</html>
+
